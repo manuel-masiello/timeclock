@@ -353,15 +353,27 @@ class MainActivity : ComponentActivity() {
         val encodedBody = Uri.encode(body)
         val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
 
+        // Essai 1: ACTION_SENDTO avec URI + extras pour BlueMail
         val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
             setPackage("me.bluemail.mail")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(RECIPIENT))
+            putExtra(Intent.EXTRA_SUBJECT, slot.emailSubject)
+            putExtra(Intent.EXTRA_TEXT, body)
         }
 
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            // BlueMail non installe, fallback sans package
-            startActivity(Intent(Intent.ACTION_SENDTO, uri))
+            try {
+                // Essai 2: ACTION_VIEW avec mailto URI pour BlueMail
+                val intent2 = Intent(Intent.ACTION_VIEW, uri).apply {
+                    setPackage("me.bluemail.mail")
+                }
+                startActivity(intent2)
+            } catch (e2: Exception) {
+                // Essai 3: fallback sans package
+                startActivity(Intent(Intent.ACTION_SENDTO, uri))
+            }
         }
     }
 
