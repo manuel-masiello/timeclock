@@ -349,21 +349,18 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun sendEmail(slot: TimeSlot, body: String) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
+        val encodedSubject = Uri.encode(slot.emailSubject)
+        val encodedBody = Uri.encode(body)
+        val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
+
+        val intent = Intent(Intent.ACTION_SENDTO, uri).apply {
             setPackage("me.bluemail.mail")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(RECIPIENT))
-            putExtra(Intent.EXTRA_SUBJECT, slot.emailSubject)
-            putExtra(Intent.EXTRA_TEXT, body)
         }
 
         try {
             startActivity(intent)
         } catch (e: Exception) {
-            // BlueMail non installe, fallback mailto:
-            val encodedSubject = Uri.encode(slot.emailSubject)
-            val encodedBody = Uri.encode(body)
-            val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
+            // BlueMail non installe, fallback sans package
             startActivity(Intent(Intent.ACTION_SENDTO, uri))
         }
     }
