@@ -1,0 +1,4 @@
+#Wed Mar 04 11:23:47 CET 2026
+base.0=/home/manuel/projets/timeclock/app/build/intermediates/dex/debugAndroidTest/mergeProjectDexDebugAndroidTest/0/classes.dex
+path.0=0/classes.dex
+renamed.0=classes.dex

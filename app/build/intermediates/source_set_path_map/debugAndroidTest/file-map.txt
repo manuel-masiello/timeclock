@@ -1,0 +1,4 @@
+com.timeclock.app.test.app-androidTest-0 /home/manuel/projets/timeclock/app/build/generated/res/resValues/androidTest/debug
+com.timeclock.app.test.app-mergeDebugAndroidTestResources-1 /home/manuel/projets/timeclock/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.timeclock.app.test.app-mergeDebugAndroidTestResources-2 /home/manuel/projets/timeclock/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.timeclock.app.test.app-merged_res-3 /home/manuel/projets/timeclock/app/build/intermediates/merged_res/debugAndroidTest

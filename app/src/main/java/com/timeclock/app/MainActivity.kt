@@ -14,6 +14,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -181,7 +183,15 @@ class MainActivity : ComponentActivity() {
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Image(
+                    painter = painterResource(id = R.drawable.logo_critt),
+                    contentDescription = "CRITT TJFU",
+                    modifier = Modifier.height(100.dp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "TimeClock",
@@ -339,12 +349,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun sendEmail(slot: TimeSlot, body: String) {
-        val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(RECIPIENT))
-            putExtra(Intent.EXTRA_SUBJECT, slot.emailSubject)
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
+        val encodedSubject = Uri.encode(slot.emailSubject)
+        val encodedBody = Uri.encode(body)
+        val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
+
+        val emailIntent = Intent(Intent.ACTION_SENDTO, uri)
 
         try {
             startActivity(emailIntent)
