@@ -349,22 +349,31 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun sendEmail(slot: TimeSlot, body: String) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "message/rfc822"
-            setPackage("me.bluemail.mail")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(RECIPIENT))
-            putExtra(Intent.EXTRA_SUBJECT, slot.emailSubject)
-            putExtra(Intent.EXTRA_TEXT, body)
-        }
+        val encodedSubject = Uri.encode(slot.emailSubject)
+        val encodedBody = Uri.encode(body)
+        val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
 
         try {
+            // ACTION_VIEW avec mailto: (comme un lien mailto dans un navigateur)
+            val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                setPackage("me.bluemail.mail")
+            }
             startActivity(intent)
         } catch (e: Exception) {
-            // BlueMail non installe, fallback mailto:
-            val encodedSubject = Uri.encode(slot.emailSubject)
-            val encodedBody = Uri.encode(body)
-            val uri = Uri.parse("mailto:$RECIPIENT?subject=$encodedSubject&body=$encodedBody")
-            startActivity(Intent(Intent.ACTION_SENDTO, uri))
+            // Fallback: ACTION_SEND text/plain (ouvre un nouvel email dans BlueMail)
+            val intent2 = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                setPackage("me.bluemail.mail")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(RECIPIENT))
+                putExtra(Intent.EXTRA_SUBJECT, slot.emailSubject)
+                putExtra(Intent.EXTRA_TEXT, body)
+            }
+            try {
+                startActivity(intent2)
+            } catch (e2: Exception) {
+                // Dernier fallback sans cibler BlueMail
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+            }
         }
     }
 
